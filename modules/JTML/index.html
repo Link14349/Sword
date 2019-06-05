@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>JTML</title>
+    <script type="text/javascript" src="dependencies/jquery-3.3.1.min.js"></script>
+    <script type="text/javascript" src="dist/index.js"></script>
+    <script type="text/javascript" src="dist/value.js"></script>
+    <script type="text/javascript" src="dist/control-flow.js"></script>
+</head>
+<body>
+<set>
+    <token>name</token> <value>"JTML"</value>
+    <token>version</token> <value>"v-0.0.1"</value>
+</set>
+<p>Name: <show>name</show></p>
+<p>Version: <show>version</show></p>
+<p>Time: <show>(new Date()).toUTCString()</show></p>
+<if conditional="1 + 2 == 1">
+    <p>1+2=1</p>
+</if>
+<elif conditional="1 + 2 == 2">
+    <p>1+2=2</p>
+</elif>
+<elif conditional="1 + 2 == 3">
+    <p>1+2=3</p>
+</elif>
+<else>
+    <p>unknown</p>
+</else>
+<set>
+    <token>i</token> <value>0</value>
+</set>
+<do conditional="i < 10">
+    <p><show>i++</show></p>
+</do>
+</body>
+</html>

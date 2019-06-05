@@ -1,0 +1,1 @@
+{"version":3,"sources":["../src/ajax.js"],"names":[],"mappings":"AAAA;;;;;;AAMA","file":"ajax.js","sourcesContent":["/**\n* @name Sword\n* @description A front-end framework for rapid development like a sword\n* @author yhzheng\n* @license Apache-2.0\n* */\n\"use strict\";\n\n"]}

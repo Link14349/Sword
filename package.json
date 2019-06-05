@@ -1,0 +1,30 @@
+{
+  "name": "sword",
+  "version": "1.0.0",
+  "description": "A front-end framework for rapid development like a sword",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"A front-end framework for rapid development like a sword\"",
+    "webpack": "webpack --progress --colors --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qianduanXIAOHAOZI/Sword.git"
+  },
+  "keywords": [
+    "framework"
+  ],
+  "author": "yhzheng",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/qianduanXIAOHAOZI/Sword/issues"
+  },
+  "homepage": "https://github.com/qianduanXIAOHAOZI/Sword#readme",
+  "devDependencies": {
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-es2016": "^6.24.1",
+    "babel-preset-react": "^6.24.1",
+    "babel-preset-stage-2": "^6.24.1"
+  }
+}

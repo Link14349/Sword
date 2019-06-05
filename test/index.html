@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TESTS-index</title>
+    <!--<script type="text/javascript" src="../release/Sword.js"></script>-->
+    <script type="text/javascript" src="../src/index.js"></script>
+</head>
+<body>
+<show>123 + 123</show>
+<script type="text/javascript">
+    sword.defaultModuleRelPath = "../modules";
+    sword.updateModulePath();
+    sword.useSync([ "JTML" ]).then(() => {
+        sword.loadGlobal([ "JTML" ]);
+        console.log(JTML);
+    }).catch((err) => {
+        throw err;
+    });
+</script>
+</body>
+</html>
