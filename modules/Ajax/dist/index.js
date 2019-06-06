@@ -64,6 +64,59 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         };
     }();
 
+    var JSONP = function () {
+        var _ref4 = _asyncToGenerator( /*#__PURE__*/_regenerator2.default.mark(function _callee2(_ref5) {
+            var url = _ref5.url,
+                data = _ref5.data,
+                success = _ref5.success,
+                error = _ref5.error,
+                _ref5$name = _ref5.name,
+                name = _ref5$name === undefined ? "JSONP_CALLBACK" : _ref5$name,
+                _ref5$sync = _ref5.sync,
+                sync = _ref5$sync === undefined ? false : _ref5$sync,
+                _ref5$outTime = _ref5.outTime,
+                outTime = _ref5$outTime === undefined ? 10000 : _ref5$outTime;
+            return _regenerator2.default.wrap(function _callee2$(_context2) {
+                while (1) {
+                    switch (_context2.prev = _context2.next) {
+                        case 0:
+                            if (!sync) {
+                                _context2.next = 6;
+                                break;
+                            }
+
+                            _context2.next = 3;
+                            return new Promise(function (resolve, reject) {
+                                __JSONP({
+                                    url: url, data: data, success: function success(content) {
+                                        resolve(content);
+                                    }, error: function error(err) {
+                                        reject(new HTTPError("HTTP request failed.\nRequest-Type: JSONP;\nError-Message: " + JSON.stringify(err, null, 4)));
+                                    }, name: name, outTime: outTime
+                                });
+                            });
+
+                        case 3:
+                            return _context2.abrupt("return", _context2.sent);
+
+                        case 6:
+                            __JSONP({
+                                url: url, data: data, success: success, error: error, name: name, outTime: outTime
+                            });
+
+                        case 7:
+                        case "end":
+                            return _context2.stop();
+                    }
+                }
+            }, _callee2, this);
+        }));
+
+        return function JSONP(_x2) {
+            return _ref4.apply(this, arguments);
+        };
+    }();
+
     // 定义HTTPError类用于抛出HTTPERROR
     var HTTPError = function (_Error) {
         _inherits(HTTPError, _Error);
@@ -106,6 +159,8 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
         }
         return txt;
     }
+
+    // ajax
     function get(url, data, s, e) {
         var xhr = new XMLHttpRequest();
         xhr.open("GET", "" + url + function () {
@@ -140,9 +195,45 @@ function _inherits(subClass, superClass) { if (typeof superClass !== "function" 
 
     ajax.get = get;
     ajax.post = post;
+
+    // JSONP
+    function __JSONP(_ref3) {
+        var url = _ref3.url,
+            data = _ref3.data,
+            success = _ref3.success,
+            error = _ref3.error,
+            _ref3$name = _ref3.name,
+            name = _ref3$name === undefined ? "JSONP_CALLBACK" : _ref3$name,
+            _ref3$outTime = _ref3.outTime,
+            outTime = _ref3$outTime === undefined ? 10000 : _ref3$outTime;
+
+        var head = document.getElementsByTagName("head")[0];
+        var script = document.createElement("script");
+        data.__JSONP_CALLBACK = name;
+        script.src = url + "?" + dataString(data);
+        head.appendChild(script);
+
+        window[name] = function (content) {
+            head.removeChild(script);
+            clearTimeout(script.timer);
+            delete window[name];
+            if (success) success(content);
+        };
+
+        function loadError() {
+            head.removeChild(script);
+            if (error) error({ loader: script, state: 0, message: "Timeout", outTime: outTime });
+        }
+        // 超时处理
+        script.timer = setTimeout(loadError, outTime);
+        // 加载错误处理
+        script.onerror = loadError;
+    }
+
     sword.define("Ajax", function (exports) {
         exports({
-            get: get, post: post, ajax: ajax
+            get: get, post: post, ajax: ajax,
+            JSONP: JSONP
         });
     });
 }(sword);
