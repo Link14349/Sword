@@ -11,14 +11,11 @@ app.use(bodyParser.urlencoded());
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public/index.html'));
 });
-app.get("/hi", (req, res) => {
-    res.send("Hi! From '" + req.query.name + "', state " + req.query.state);
-});
-app.get("/info", (req, res) => {
+app.get("/get", (req, res) => {
     let {browser, name} = JSON.parse(req.query.info);
     res.send("Name '" + name + "', browser " + browser);
 });
-app.post("/user", (req, res) => {
+app.post("/post", (req, res) => {
     res.send("Name '" + req.body.name + "'");
 });
 app.get(/\/files\/.+/, (req, res) => {

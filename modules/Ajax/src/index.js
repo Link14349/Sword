@@ -1,14 +1,19 @@
 "use strict";
 
 !function (sword) {
+    // 定义HTTPError类用于抛出HTTPERROR
+    class HTTPError extends Error {
+        constructor(message) {
+            super();
+            this.name = "HTTPError: ";
+            this.message = message;
+        }
+    }
+
     function dataString(data) {
-        let txt = "";
+        let txt = "__token=" + Math.random();// 默认首先添加一个令牌防止浏览器缓存
         for (let i in data) {
-            if (txt == "") {
-                txt += i + "=";
-            } else {
-                txt += "&" + i + "=";
-            }
+            txt += "&" + i + "=";
             let value = data[i];
             switch (typeof value) {
                 case "string":
@@ -30,7 +35,7 @@
         }
         return txt;
     }
-    function get(url, data, cb) {
+    function get(url, data, s, e) {
         let xhr = new XMLHttpRequest();
         xhr.open("GET", `${url}${(() => {
             let txt = dataString(data);
@@ -39,25 +44,44 @@
         })()}`, true);
         xhr.onreadystatechange = function() {
             if (xhr.readyState == 4 && xhr.status == 200 || xhr.status == 304) {// 请求完成
-                if (cb) cb(xhr.responseText);
+                if (s) s(xhr.responseText);
+            } else if (xhr.readyState == 4) {
+                if (e) e(xhr);
             }
         };
         xhr.send();
     }
-    function post(url, data, cb) {
+    function post(url, data, s, e) {
         let xhr = new XMLHttpRequest();
         xhr.open("POST", url, true);
         xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
         xhr.onreadystatechange = function() {
-            if (xhr.readyState == 4 && xhr.status == 200 || xhr.status == 304) {// 请求完成
-                if (cb) cb(xhr.responseText);
+            if (xhr.readyState == 4 &&  xhr.status == 200 || xhr.status == 304) {// 请求完成
+                if (s) s(xhr.responseText);
+            } else if (xhr.readyState == 4) {
+                if (e) e(xhr);
             }
         };
         xhr.send(dataString(data));
     }
+    async function ajax({ type = "get", success, error, data, url, sync = false }) {
+        if (sync) {
+            return (await new Promise((resolve, reject) => {
+                ajax[type.toLowerCase()](url, data, (content) => {
+                    resolve(content);
+                }, (xrh) => {
+                    reject(new HTTPError(`HTTP request failed.\nRequest-Type: ${type}; Request-URL: ${url}; state: ${xrh.readyState}; status: ${xrh.status}`));
+                });
+            }));
+        } else {
+            ajax[type.toLowerCase()](url, data, success, error);
+        }
+    }
+    ajax.get = get;
+    ajax.post = post;
     sword.define("Ajax", (exports) => {
         exports({
-            get, post
+            get, post, ajax
         });
     });
 }(sword);

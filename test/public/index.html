@@ -9,13 +9,8 @@
 <show>123 + 123</show>
 <script type="text/javascript">
     sword.modulePath("/files/.../modules");
-    sword.useSync([ "JTML", "Ajax" ]).then(() => {
-        sword.Ajax.get("/hi", {
-            state: 1, name: "TEST-index"
-        }, (content) => {
-            console.log(content);
-        });
-        sword.Ajax.get("/info", {
+    sword.useSync([ "JTML", "Ajax" ]).then(async () => {
+        sword.Ajax.get("/get", {
             info: {
                 browser: navigator.userAgent,
                 name: navigator.appName
@@ -23,11 +18,19 @@
     }, (content) => {
             console.log(content);
         });
-        sword.Ajax.post("/user", {
+        sword.Ajax.post("/post", {
             name: "TEST"
         }, (content) => {
             console.log(content);
         });
+        console.log(await sword.Ajax.ajax({
+            url: "/post",
+            type: "post",
+            data: {
+                name: "TEST"
+            },
+            sync: true
+        }));
     }).catch((err) => {
         throw err;
     });
