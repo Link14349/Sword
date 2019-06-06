@@ -23,6 +23,11 @@
     }, (content) => {
             console.log(content);
         });
+        sword.Ajax.post("/user", {
+            name: "TEST"
+        }, (content) => {
+            console.log(content);
+        });
     }).catch((err) => {
         throw err;
     });
