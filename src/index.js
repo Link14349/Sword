@@ -104,7 +104,7 @@ const Sword = (function () {
     return Sword;
 })();
 
-const sword = new Sword(document);// 定义默认sword实例
+export const sword = new Sword(document);// 定义默认sword实例
 
 window.Sword = Sword;
 window.sword = sword;
