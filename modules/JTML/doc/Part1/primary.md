@@ -9,7 +9,17 @@ Use tag `<show>expression</show>`.
 Time: <show>(new Date()).toUTCString()</show>
 ```
 
-Set variable
+Send Ajax Request & Show Result
+------------
+Use tag `<ajax url="url" type="Request-Type">data(JSON)</show>`.
+#### example
+```html
+<ajax url="/welcome" type="get">
+    { name: "JTML" }
+</ajax>
+```
+
+Set Variable
 ---------------
 Use tag `<set><token>variable-name</token> <value>set value</value></set>`.
 #### example
@@ -22,7 +32,7 @@ Use tag `<set><token>variable-name</token> <value>set value</value></set>`.
 <p>version: <show>version</show></p>
 ```
 
-If statement
+If Statement
 -----------------
 Use tag `<if conditional="conditional"><!--JTML code here--></if>`.
 Use tag `<elif conditional="conditional"><!--JTML code here--></elif>` when the if statement does not hold.
@@ -43,7 +53,7 @@ Use tag `<else><!--JTML code here--></else>` when the if statement and elif stat
 </else>
 ```
 
-While statement
+While Statement
 -----------------
 Use tag `<while conditional="conditional"><!--JTML code here--></while>`.
 #### example
@@ -56,7 +66,7 @@ Use tag `<while conditional="conditional"><!--JTML code here--></while>`.
 </while>
 ```
 
-Do statement
+Do Statement
 -----------------
 Use tag `<do conditional="conditional"><!--JTML code here--></do>`.
 It likes do...while in JavaScript.
