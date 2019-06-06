@@ -1,3 +1,7 @@
+
+const jQuery = require("./../dependencies/jquery-3.3.1.min.js");
+const $ = jQuery;
+
 !function (JTML) {
     JTML.compiler.$compiler(function set(tag) {
         let tags = tag.children();
@@ -50,4 +54,19 @@
         eval(tag.text());
         // console.log(tag.text());
     }, "value");
+    JTML.compiler.$compiler(function ajax(tag) {
+        let data = eval(`(function () { return (${tag.text()}); })()`);
+        tag.text("Loading...");
+        $.ajax({
+            data,
+            type: tag.attr("type") || "get",
+            url: tag.attr("url"),
+            success: (content) => {
+                tag.text(content);
+            },
+            error: () => {
+                tag.html("<strong style='color: #f00;'>Http-Request Error.</strong>");
+            }
+        });
+    }, "ajax", false);
 }(sword.JTML);

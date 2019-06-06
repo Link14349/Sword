@@ -6,7 +6,9 @@
     <script type="text/javascript" src="/files/.../release/Sword.js"></script>
 </head>
 <body>
-<show>123 + 123</show>
+<ajax url="/welcome" type="get">
+    { name: "Sword" }
+</ajax>
 <script type="text/javascript">
     sword.modulePath("/files/.../modules");
     sword.useSync([ "JTML", "Ajax" ]).then(async () => {

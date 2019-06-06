@@ -1,5 +1,8 @@
 "use strict";
 
+var jQuery = require("./../dependencies/jquery-3.3.1.min.js");
+var $ = jQuery;
+
 !function (JTML) {
     JTML.compiler.$compiler(function set(tag) {
         var tags = tag.children();
@@ -54,5 +57,20 @@
         eval(tag.text());
         // console.log(tag.text());
     }, "value");
+    JTML.compiler.$compiler(function ajax(tag) {
+        var data = eval("(function () { return (" + tag.text() + "); })()");
+        tag.text("Loading...");
+        $.ajax({
+            data: data,
+            type: tag.attr("type") || "get",
+            url: tag.attr("url"),
+            success: function success(content) {
+                tag.text(content);
+            },
+            error: function error() {
+                tag.html("<strong style='color: #f00;'>Http-Request Error.</strong>");
+            }
+        });
+    }, "ajax", false);
 }(sword.JTML);
 //# sourceMappingURL=value.js.map

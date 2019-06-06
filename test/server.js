@@ -21,6 +21,9 @@ app.post("/post", (req, res) => {
 app.get("/jsonp", (req, res) => {
     res.send("JSONP_CALLBACK(\"Name '" + req.query.name + "'\")");
 });
+app.get("/welcome", (req, res) => {
+    res.send("Welcome, " + req.query.name + ".");
+});
 app.get(/\/files\/.+/, (req, res) => {
     let p = req.originalUrl.replace(/^\/files\//, "").replace(/(\/?)\.\.\.(\/?)/, "$1..$2");
     res.sendFile(path.join(__dirname, p));
