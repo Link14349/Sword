@@ -47,6 +47,11 @@ const Sword = (function () {
         updateModulePath() {
             this.defaultModulePath = pathJoin(this.defaultModulePathRoot, this.defaultModuleRelPath);
         }
+        modulePath(path) {
+            this.defaultModuleRelPath = path;
+            this.updateModulePath();
+            return this;
+        }
         getModule(moduleName) {
             return new Promise((resolve, reject) => {
                 let script = document.createElement("script");

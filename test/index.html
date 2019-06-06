@@ -9,8 +9,7 @@
 <body>
 <show>123 + 123</show>
 <script type="text/javascript">
-    sword.defaultModuleRelPath = "../modules";
-    sword.updateModulePath();
+    sword.modulePath("../modules");
     sword.useSync([ "JTML" ]).then(() => {
         sword.loadGlobal([ "JTML" ]);
         console.log(JTML);

@@ -80,6 +80,13 @@ var Sword = function () {
                 this.defaultModulePath = pathJoin(this.defaultModulePathRoot, this.defaultModuleRelPath);
             }
         }, {
+            key: "modulePath",
+            value: function modulePath(path) {
+                this.defaultModuleRelPath = path;
+                this.updateModulePath();
+                return this;
+            }
+        }, {
             key: "getModule",
             value: function getModule(moduleName) {
                 var _this = this;
