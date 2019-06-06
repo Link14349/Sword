@@ -33,7 +33,7 @@ const Sword = (function () {
                 path = path.substring(0, path.length - 1);
             }
         }
-        path = path.replace(/\/[^\/]+\/\.\.\//, "/");
+        path = path.replace(/\/[^\/]+\/\.\.\//g, "/").replace(/\/\//g, "/");
         return path;
     }
 

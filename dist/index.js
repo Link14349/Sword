@@ -6,6 +6,11 @@
  * */
 "use strict";
 
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.sword = undefined;
+
 var _regenerator = require("babel-runtime/regenerator");
 
 var _regenerator2 = _interopRequireDefault(_regenerator);
@@ -60,7 +65,7 @@ var Sword = function () {
                 path = path.substring(0, path.length - 1);
             }
         }
-        path = path.replace(/\/[^\/]+\/\.\.\//, "/");
+        path = path.replace(/\/[^\/]+\/\.\.\//g, "/").replace(/\/\//g, "/");
         return path;
     }
 
@@ -250,7 +255,7 @@ var Sword = function () {
     return Sword;
 }();
 
-var sword = new Sword(document); // 定义默认sword实例
+var sword = exports.sword = new Sword(document); // 定义默认sword实例
 
 window.Sword = Sword;
 window.sword = sword;

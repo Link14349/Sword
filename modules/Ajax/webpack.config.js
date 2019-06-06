@@ -1,10 +1,10 @@
 module.exports = {
-    entry: [ "./dist/index.js",  "./dist/value.js",  "./dist/control-flow.js" ],
+    entry: [ "./dist/index.js" ],
     output: {
         path: __dirname,
-        filename: "JTML.js"
+        filename: "Ajax.js"
     },
     externals: {
-        JTML: "JTML"
+        Ajax: "Ajax"
     }
 };

@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TESTS-index</title>
+    <script type="text/javascript" src="/files/.../release/Sword.js"></script>
+</head>
+<body>
+<show>123 + 123</show>
+<script type="text/javascript">
+    sword.modulePath("/files/.../modules");
+    sword.useSync([ "JTML", "Ajax" ]).then(() => {
+        sword.Ajax.get("/hi", {
+            state: 1, name: "TEST-index"
+        }, (content) => {
+            console.log(content);
+        });
+        sword.Ajax.get("/info", {
+            info: {
+                browser: navigator.userAgent,
+                name: navigator.appName
+            }
+    }, (content) => {
+            console.log(content);
+        });
+    }).catch((err) => {
+        throw err;
+    });
+</script>
+</body>
+</html>
