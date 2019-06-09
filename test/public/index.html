@@ -9,37 +9,58 @@
 <ajax url="/welcome" type="get">
     { name: "Sword" }
 </ajax>
+<span id="t"></span>
 <script type="text/javascript">
     sword.modulePath("/files/.../modules");
-    sword.useSync([ "JTML", "Ajax" ]).then(async () => {
-        sword.Ajax.get("/get", {
-            info: {
-                browser: navigator.userAgent,
-                name: navigator.appName
-            }
-    }, (content) => {
-            console.log(content);
-        });
-        sword.Ajax.post("/post", {
-            name: "TEST"
-        }, (content) => {
-            console.log(content);
-        });
-        console.log(await sword.Ajax.ajax({
-            url: "/post",
-            type: "post",
+    // sword.useSync([ "JTML", "Ajax" ]).then(async () => {
+    //     sword.Ajax.get("/get", {
+    //         info: {
+    //             browser: navigator.userAgent,
+    //             name: navigator.appName
+    //         }
+    // }, (content) => {
+    //         console.log(content);
+    //     });
+    //     sword.Ajax.post("/post", {
+    //         name: "TEST"
+    //     }, (content) => {
+    //         console.log(content);
+    //     });
+    //     console.log(await sword.Ajax.ajax({
+    //         url: "/post",
+    //         type: "post",
+    //         data: {
+    //             name: "TEST"
+    //         },
+    //         sync: true
+    //     }));
+    //     console.log(await sword.Ajax.JSONP({
+    //         url: "/jsonp",
+    //         data: {
+    //             name: "TEST"
+    //         },
+    //         sync: true
+    //     }));
+    // }).catch((err) => {
+    //     throw err;
+    // });
+    sword.useSync([ "JTML", "Binder" ]).then(() => {
+        let a = {
+            name: "v",
             data: {
-                name: "TEST"
+                v: "v"
             },
-            sync: true
-        }));
-        console.log(await sword.Ajax.JSONP({
-            url: "/jsonp",
-            data: {
-                name: "TEST"
-            },
-            sync: true
-        }));
+            innerHTML: "v"
+        };
+        let watcher = new sword.Binder.Watcher(a, document.getElementById("t"));
+        watcher.on("change", function (root, data, keys, value) {
+            console.log(...arguments);
+        });
+        watcher.bind([ "data", "v" ], [ "class" ]);
+        a.name = "b";
+        a.data.v = "c";
+        a.innerHTML = "c";
+        console.log(watcher);
     }).catch((err) => {
         throw err;
     });
