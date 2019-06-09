@@ -17,15 +17,17 @@ function define(data, key, value, change, root = data, keys = []) {
             return value;
         },
         set: (v) => {
-            if (value && typeof value == "object") {
+            if (value != v && value && typeof value == "object") {
                 Object.keys(value).forEach((i) => {
                     unbind(value, i);
                 });
+                observe(v, change, root, [...keys]);
             }
             value = v;
             change(root, data, key, keys, value);
         }
     });
+    change(root, data, key, keys, value);
 }
 function unbind(data, key) {
     if (data && typeof data == "object") {
@@ -52,7 +54,9 @@ export class Observer {
         }
         this.__data = data;
         this.__ons = { };
-        observe(data, (root, data, key, keys, value) => {
+    }
+    init() {
+        observe(this.__data, (root, data, key, keys, value) => {
             if (this.haveListener("change")) this.emit("change", [ root, data, keys, value ]);
             // console.log("改变key: '" + key + "', newValue: " + value.toString());
         });
@@ -69,3 +73,5 @@ export class Observer {
         return !!this.__ons[name];
     }
 }
+
+Observer.unbind = unbind;

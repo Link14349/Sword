@@ -57,10 +57,9 @@
             console.log(...arguments);
         });
         watcher.bind([ "data", "v" ], [ "class" ]);
-        a.name = "b";
-        a.data.v = "c";
-        a.innerHTML = "c";
-        console.log(watcher);
+        // a.name = "b";
+        // a.data.v = "c";
+        // a.innerHTML = "c";
     }).catch((err) => {
         throw err;
     });

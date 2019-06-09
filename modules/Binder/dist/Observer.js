@@ -44,15 +44,17 @@ function define(data, key, value, change) {
             return value;
         },
         set: function set(v) {
-            if (value && (typeof value === "undefined" ? "undefined" : _typeof(value)) == "object") {
+            if (value != v && value && (typeof value === "undefined" ? "undefined" : _typeof(value)) == "object") {
                 Object.keys(value).forEach(function (i) {
                     unbind(value, i);
                 });
+                observe(v, change, root, [].concat(_toConsumableArray(keys)));
             }
             value = v;
             change(root, data, key, keys, value);
         }
     });
+    change(root, data, key, keys, value);
 }
 function unbind(data, key) {
     if (data && (typeof data === "undefined" ? "undefined" : _typeof(data)) == "object") {
@@ -77,8 +79,6 @@ function observe(data, change) {
 
 var Observer = exports.Observer = function () {
     function Observer(data) {
-        var _this2 = this;
-
         _classCallCheck(this, Observer);
 
         if ((typeof data === "undefined" ? "undefined" : _typeof(data)) != "object") {
@@ -86,13 +86,19 @@ var Observer = exports.Observer = function () {
         }
         this.__data = data;
         this.__ons = {};
-        observe(data, function (root, data, key, keys, value) {
-            if (_this2.haveListener("change")) _this2.emit("change", [root, data, keys, value]);
-            // console.log("改变key: '" + key + "', newValue: " + value.toString());
-        });
     }
 
     _createClass(Observer, [{
+        key: "init",
+        value: function init() {
+            var _this2 = this;
+
+            observe(this.__data, function (root, data, key, keys, value) {
+                if (_this2.haveListener("change")) _this2.emit("change", [root, data, keys, value]);
+                // console.log("改变key: '" + key + "', newValue: " + value.toString());
+            });
+        }
+    }, {
         key: "on",
         value: function on(name, cb) {
             this.__ons[name] = cb;
@@ -115,4 +121,6 @@ var Observer = exports.Observer = function () {
 
     return Observer;
 }();
+
+Observer.unbind = unbind;
 //# sourceMappingURL=Observer.js.map

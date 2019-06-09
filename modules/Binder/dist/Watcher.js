@@ -17,6 +17,8 @@ var Watcher = exports.Watcher = function () {
     function Watcher(data, bindingData) {
         var _this = this;
 
+        var debug = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
         _classCallCheck(this, Watcher);
 
         this.__data = data;
@@ -24,19 +26,38 @@ var Watcher = exports.Watcher = function () {
         this.oberver = new _Observer.Observer(data);
         this.__ons = {};
         this.__bindings = {};
+        this.debug = debug;
+        this.error = null;
         this.oberver.on("change", function (root, data, keys, value) {
-            var bd = _this.__bindingData;
-            var evalString = "bd";
-            for (var i = 0; i < keys.length; i++) {
-                evalString += "[" + JSON.stringify(keys[i]) + "]";
+            var update = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : true;
+
+            _this.error = null;
+            if (update) {
+                var bd = _this.__bindingData;
+                var evalString = "bd";
+                for (var i = 0; i < keys.length; i++) {
+                    evalString += "[" + JSON.stringify(keys[i]) + "]";
+                }
+                if (_this.__bindings[evalString]) evalString = _this.__bindings[evalString];
+                evalString += " = " + JSON.stringify(value);
+                try {
+                    eval(evalString);
+                } catch (e) {
+                    if (_this.debug) console.error(e);
+                    _this.error = e;
+                }
             }
-            if (_this.__bindings[evalString]) evalString = _this.__bindings[evalString];
-            console.log(evalString);
-            evalString += " = " + JSON.stringify(value);
-            eval(evalString);
+            // console.log("change: " + keys + ": " + value);
             if (_this.haveListener("change")) {
                 _this.emit("change", [root, data, keys, value]);
             }
+        });
+        this.oberver.init();
+        this.on("update", function () {
+            Object.keys(_this.__data).forEach(function (key) {
+                _Observer.Observer.unbind(_this.__data, key);
+            });
+            _this.oberver = new _Observer.Observer(data);
         });
     }
 
@@ -71,6 +92,9 @@ var Watcher = exports.Watcher = function () {
                 nk += "[" + JSON.stringify(newKeys[_i]) + "]";
             }
             this.__bindings[rk] = nk;
+            if (this.error) {
+                this.emit("update", []);
+            }
         }
     }]);
 

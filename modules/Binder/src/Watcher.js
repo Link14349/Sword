@@ -3,24 +3,42 @@
 import { Observer } from "./Observer"
 
 export class Watcher {
-    constructor(data, bindingData) {
+    constructor(data, bindingData, debug = false) {
         this.__data = data;
         this.__bindingData = bindingData;
         this.oberver = new Observer(data);
         this.__ons = { };
         this.__bindings = { };
-        this.oberver.on("change", (root, data, keys, value) => {
-            let bd = this.__bindingData;
-            let evalString = "bd";
-            for (let i = 0; i < keys.length; i++) {
-                evalString += "[" + JSON.stringify(keys[i]) + "]";
+        this.debug = debug;
+        this.error = null;
+        this.oberver.on("change", (root, data, keys, value, update = true) => {
+            this.error = null;
+            if (update) {
+                let bd = this.__bindingData;
+                let evalString = "bd";
+                for (let i = 0; i < keys.length; i++) {
+                    evalString += "[" + JSON.stringify(keys[i]) + "]";
+                }
+                if (this.__bindings[evalString]) evalString = this.__bindings[evalString];
+                evalString += " = " + JSON.stringify(value);
+                try {
+                    eval(evalString);
+                } catch (e) {
+                    if (this.debug) console.error(e);
+                    this.error = e;
+                }
             }
-            if (this.__bindings[evalString]) evalString = this.__bindings[evalString];
-            evalString += " = " + JSON.stringify(value);
-            eval(evalString);
+            // console.log("change: " + keys + ": " + value);
             if (this.haveListener("change")) {
                 this.emit("change", [ root, data, keys, value ]);
             }
+        });
+        this.oberver.init();
+        this.on("update", () => {
+            Object.keys(this.__data).forEach((key) => {
+                Observer.unbind(this.__data, key);
+            });
+            this.oberver = new Observer(data);
         });
     }
     on(name, cb) {
@@ -44,5 +62,8 @@ export class Watcher {
             nk += "[" + JSON.stringify(newKeys[i]) + "]";
         }
         this.__bindings[rk] = nk;
+        if (this.error) {
+            this.emit("update", [ ]);
+        }
     }
 }
