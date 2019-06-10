@@ -274,6 +274,7 @@ var Sword = function () {
 
     Sword.instances = [];
     Sword.exports = {};
+    Sword.pathJoin = pathJoin;
 
     return Sword;
 }();
