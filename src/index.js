@@ -38,11 +38,18 @@ const Sword = (function () {
     }
 
     class Sword {
-        constructor(dom) {
+        constructor(dom, solitary = false) {
             this.dom = dom;
             this.defaultModuleRelPath = "modules";
             this.defaultModulePathRoot = window.location.href.replace(/https?:\/\/[^/]+/, "").replace(/\/[^\/]+$/, "");
             this.defaultModulePath = pathJoin(this.defaultModulePathRoot, this.defaultModuleRelPath);
+            this.solitary = solitary;
+            if (!solitary) {
+                for (let i in Sword.exports) {
+                    this[i] = Sword.exports[i];
+                }
+            }
+            Sword.instances.push(this);
         }
         updateModulePath() {
             this.defaultModulePath = pathJoin(this.defaultModulePathRoot, this.defaultModuleRelPath);
@@ -91,20 +98,35 @@ const Sword = (function () {
             }
             return this;
         }
-        define(moduleName, definer) {
+        define(moduleName, definer) {// 会为所有对象加入模块，除法该实例solitary为true
+            if ((new Sword(document, true))) {}
             let module = new Module(moduleName);
             definer(function exports(methods) {
                 module.Exports(methods);
             }.bind(this));
-            this[moduleName] = module.exports;
+            if (this.solitary) {// solitary的实例不与其他实例发生作用
+                this[moduleName] = module.exports;
+                return this;
+            }
+            Sword.exports[moduleName] = module.exports;// 让Sword类自己也存一份，这么创建实例时就可以自动引入模块了，但是solitary的实例不会自动引入，也不会为Sword加入静态值
+            for (let i = 0; i < Sword.instances.length; i++) {
+                if (Sword.instances[i].solitary) continue;
+                Sword.instances[i][moduleName] = module.exports;
+            }
             return this;
         }
     }
+    Sword.instances = [ ];
+    Sword.exports = { };
 
     return Sword;
 })();
 
-export const sword = new Sword(document);// 定义默认sword实例
+const sword = new Sword(document);// 定义默认sword实例
 
-window.Sword = Sword;
 window.sword = sword;
+window.Sword = Sword;
+
+export {
+    sword, Sword
+};

@@ -9,7 +9,7 @@
 Object.defineProperty(exports, "__esModule", {
     value: true
 });
-exports.sword = undefined;
+exports.Sword = exports.sword = undefined;
 
 var _regenerator = require("babel-runtime/regenerator");
 
@@ -71,12 +71,21 @@ var Sword = function () {
 
     var Sword = function () {
         function Sword(dom) {
+            var solitary = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
+
             _classCallCheck(this, Sword);
 
             this.dom = dom;
             this.defaultModuleRelPath = "modules";
             this.defaultModulePathRoot = window.location.href.replace(/https?:\/\/[^/]+/, "").replace(/\/[^\/]+$/, "");
             this.defaultModulePath = pathJoin(this.defaultModulePathRoot, this.defaultModuleRelPath);
+            this.solitary = solitary;
+            if (!solitary) {
+                for (var i in Sword.exports) {
+                    this[i] = Sword.exports[i];
+                }
+            }
+            Sword.instances.push(this);
         }
 
         _createClass(Sword, [{
@@ -154,7 +163,7 @@ var Sword = function () {
                     }, _callee, this);
                 }));
 
-                function use(_x, _x2) {
+                function use(_x2, _x3) {
                     return _ref.apply(this, arguments);
                 }
 
@@ -210,7 +219,7 @@ var Sword = function () {
                                             }, _callee2, this);
                                         }));
 
-                                        return function (_x4, _x5) {
+                                        return function (_x5, _x6) {
                                             return _ref3.apply(this, arguments);
                                         };
                                     }().bind(this)));
@@ -223,7 +232,7 @@ var Sword = function () {
                     }, _callee3, this);
                 }));
 
-                function useSync(_x3) {
+                function useSync(_x4) {
                     return _ref2.apply(this, arguments);
                 }
 
@@ -240,11 +249,22 @@ var Sword = function () {
         }, {
             key: "define",
             value: function define(moduleName, definer) {
+                // 会为所有对象加入模块，除法该实例solitary为true
+                if (new Sword(document, true)) {}
                 var module = new Module(moduleName);
                 definer(function exports(methods) {
                     module.Exports(methods);
                 }.bind(this));
-                this[moduleName] = module.exports;
+                if (this.solitary) {
+                    // solitary的实例不与其他实例发生作用
+                    this[moduleName] = module.exports;
+                    return this;
+                }
+                Sword.exports[moduleName] = module.exports; // 让Sword类自己也存一份，这么创建实例时就可以自动引入模块了，但是solitary的实例不会自动引入，也不会为Sword加入静态值
+                for (var i = 0; i < Sword.instances.length; i++) {
+                    if (Sword.instances[i].solitary) continue;
+                    Sword.instances[i][moduleName] = module.exports;
+                }
                 return this;
             }
         }]);
@@ -252,11 +272,17 @@ var Sword = function () {
         return Sword;
     }();
 
+    Sword.instances = [];
+    Sword.exports = {};
+
     return Sword;
 }();
 
-var sword = exports.sword = new Sword(document); // 定义默认sword实例
+var sword = new Sword(document); // 定义默认sword实例
 
-window.Sword = Sword;
 window.sword = sword;
+window.Sword = Sword;
+
+exports.sword = sword;
+exports.Sword = Sword;
 //# sourceMappingURL=index.js.map
