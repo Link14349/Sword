@@ -54,3 +54,4 @@ sword.dog.say();// Wrong, Because the module has not been loaded yet
 ### Modules
 - [JTML](modules/JTML/README.md)
 - [Ajax](modules/Ajax/README.md)
+- [Binder](modules/Ajax/README.md)

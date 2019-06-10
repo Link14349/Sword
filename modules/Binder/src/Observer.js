@@ -55,7 +55,7 @@ export class Observer {
         this.__data = data;
         this.__ons = { };
     }
-    init() {
+    init() {// 为什么不和constructor合并到一起呢？那是因为init方法调用后，就会开始监听被绑定数据，但是有时这种操作是不合时宜的，再接下来的Watcher类中会产生错误，所以与构造函数分开
         observe(this.__data, (root, data, key, keys, value) => {
             if (this.haveListener("change")) this.emit("change", [ root, data, keys, value ]);
             // console.log("改变key: '" + key + "', newValue: " + value.toString());
@@ -65,7 +65,7 @@ export class Observer {
         this.__ons[name] = cb;
         return this;
     }
-    emit(name, argv) {
+    emit(name, argv = []) {
         this.__ons[name](...argv);
         return this;
     }
