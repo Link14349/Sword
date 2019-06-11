@@ -1,6 +1,6 @@
 {
   "name": "sword-framework",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A front-end framework for rapid development like a sword",
   "main": "src/index.js",
   "scripts": {
